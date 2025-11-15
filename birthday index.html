@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Lamp Display</title>
+    <!-- Load Tailwind CSS for styling --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font for "Happy Birthday" --><link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the lamp effect and structure */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        :root {
+            --lamp-color: #f7e6a7; /* Soft yellow for the light */
+            --pole-color: #6c757d; /* Dark grey for the pole */
+            --pole-color-on: #95a5a6; /* Lighter pole when light is on */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Dark background */
+            transition: background-color 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* The main card that holds the entire scene */
+        .lamp-card {
+            background-color: #2c2c54;
+            border: 1px solid #3d3d6e;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            width: 90%; /* Fluid width for mobile */
+            max-width: 450px; /* Max width for desktop */
+        }
+
+        /* Initial/Default state of the light (off) */
+        .light-effect {
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.5rem;
+            background: radial-gradient(circle at 50% 10%, rgba(255, 255, 0, 0) 50%, rgba(255, 255, 0, 0));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 10;
+        }
+
+        /* Styles for the picture content wrapper (Initial state: Hidden/Off) */
+        .login-content {
+            opacity: 0;
+            transition: opacity 0.7s ease; /* Smooth fade effect */
+            pointer-events: none; /* Prevents clicks on hidden elements */
+            /* This padding ensures the content starts below the lamp pole and base */
+            padding-top: 180px; 
+            padding-bottom: 20px;
+        }
+
+        /* Styles for the instruction text (Visible when light is OFF) */
+        #instruction-text {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* ON state styles */
+        .light-on .lamp-card {
+            background-color: #3d3d6e;
+            box-shadow: 0 10px 50px rgba(255, 255, 200, 0.15); /* Soft glow around card */
+        }
+
+        .light-on .light-effect {
+            /* Creates the visible light cone/glow effect */
+            background: radial-gradient(circle at 50% 10%, rgba(255, 255, 200, 0.4) 0%, rgba(255, 255, 200, 0.1) 15%, rgba(0, 0, 0, 0) 50%);
+            opacity: 1;
+        }
+
+        /* ON state for picture content (Visible/On) */
+        .light-on .login-content {
+            opacity: 1;
+            pointer-events: auto; /* Re-enables clicks when on */
+        }
+
+        /* ON state for instruction text (Invisible when light is ON) */
+        .light-on #instruction-text {
+            opacity: 0;
+        }
+
+
+        /* Styles for the cloud/lamp element */
+        .cloud-lamp {
+            position: relative;
+            z-index: 50; /* Ensure cloud is on top */
+            margin-top: -2.5rem; /* Pull it up a bit */
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cloud-lamp:hover {
+            transform: scale(1.05);
+        }
+
+        /* Styles for the Lamp Pole */
+        .lamp-pole {
+            position: absolute;
+            top: 70px; /* Position below the cloud's center point */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 80px; /* Height of the pole */
+            background-color: var(--pole-color);
+            border-radius: 4px 4px 0 0;
+            transition: all 0.5s ease;
+            z-index: 20; /* Behind the content, but above the light effect */
+        }
+        
+        /* Styles for the Lamp Base */
+        .lamp-base {
+            position: absolute;
+            top: 150px; /* Connects to the bottom of the pole */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 10px;
+            background-color: var(--pole-color);
+            border-radius: 5px;
+            transition: all 0.5s ease;
+            z-index: 20;
+        }
+
+        /* Animation for the cloud light itself */
+        .light-on .cloud-lamp .light-bulb {
+            box-shadow: 0 0 15px 5px var(--lamp-color), 0 0 40px 10px rgba(255, 255, 200, 0.5);
+            background-color: var(--lamp-color);
+        }
+        
+        /* Light on effect for the pole and base */
+        .light-on .lamp-pole,
+        .light-on .lamp-base {
+            background-color: var(--pole-color-on);
+        }
+
+        /* Styling for the Happy Birthday text */
+        .happy-birthday-text {
+            font-family: 'Dancing Script', cursive; /* Applied new font */
+            font-size: 2.5rem; /* Large text */
+            font-weight: 700; /* Bold */
+            color: #FFD700; /* Gold color */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6); /* Glow effect */
+            margin-bottom: 20px; /* Space above image */
+            text-align: center;
+            line-height: 1; /* Adjust line height for multi-line text */
+        }
+
+        /* Message Box styling (kept for completeness, though not used now) */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #fff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+        }
+
+        .message-box.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- RESPONSIVENESS (Mobile Optimizations) --- */
+        @media (max-width: 640px) {
+            .lamp-card {
+                /* On small screens, fill more of the viewport */
+                width: 95%;
+                margin: 20px auto;
+                padding: 1rem;
+            }
+
+            .cloud-lamp {
+                margin-top: -1.5rem; /* Reduce lift on small screens */
+            }
+
+            .happy-birthday-text {
+                font-size: 2rem; /* Slightly smaller text for mobile */
+            }
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <!-- Message Box for Alerts (Kept for completeness, though not used now) --><div id="message-box" class="message-box"></div>
+
+    <div id="app" class="light-off transition-all duration-500">
+        <div id="lamp-card" class="lamp-card p-6 md:p-8 rounded-3xl shadow-2xl">
+            
+            <!-- LAMP/CLOUD TOP SECTION (Clickable Switch) --><div id="light-switch" class="cloud-lamp flex justify-center mb-6">
+                <!-- SVG Cloud --><svg width="150" height="90" viewBox="0 0 150 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="text-white fill-current transition-colors duration-500" d="M123 75.3333C136.21 75.3333 147 64.6933 147 51.5833C147 38.4733 136.21 27.8333 123 27.8333C122.95 24.1667 121.84 20.6133 119.7 17.6533C114.73 10.74 106.84 6.66667 98.3333 6.66667C86.72 6.66667 76.81 13.8833 72.86 24.6333C71.32 23.3667 69.59 22.3333 67.7333 21.6167C60.2733 18.7333 52.0167 19.3333 44.9767 23.41C38.1633 27.2733 33.1667 33.6233 31.6367 40.8333C29.61 38.6367 27.0667 37.3333 24.1667 37.3333C16.9633 37.3333 11 43.3 11 50.5833C11 57.8667 16.9633 63.8333 24.1667 63.8333H123V75.3333Z" />
+                    <!-- Light Bulb/Source --><circle id="light-bulb" class="light-bulb absolute" cx="75" cy="80" r="10" fill="#444" transition-all duration-500></circle>
+                </svg>
+            </div>
+            
+            <!-- LAMP POLE AND BASE --><div class="lamp-pole"></div>
+            <div class="lamp-base"></div>
+
+            <!-- Light Effect Layer (Must be behind the picture content) --><div class="light-effect rounded-3xl"></div>
+
+            <!-- INSTRUCTION TEXT (Visible when light is OFF, Fades when ON) --><h2 id="instruction-text" 
+                class="text-2xl md:text-3xl font-extrabold text-white text-center 
+                       absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                       transition-opacity duration-500 z-30 pointer-events-none">
+                Click on Cloud
+            </h2>
+
+            <!-- PICTURE CONTENT (Invisible when light is OFF, Fades in when ON) --><div class="relative z-30 login-content">
+                <div class="flex flex-col justify-center items-center">
+                    <!-- HAPPY BIRTHDAY Text --><h3 class="happy-birthday-text">Happy Birthday!</h3>
+                    
+                    <p class="text-center text-gray-400 mb-4 text-sm">I LOVE YOU MY BROTHER </p>
+                    <!-- Display Image --><div class="w-full max-w-sm rounded-xl overflow-hidden border-4 border-gray-700 shadow-xl">
+                        <!-- 
+                            PASTE YOUR BASE64 STRING HERE!
+                            It should replace the existing 'src="..."' attribute entirely.
+                            
+                            Example: src="data:image/png;base64,YOUR_VERY_LONG_STRING_HERE"
+                        --><img src="A.jpg"
+                             alt="Display Picture" 
+                             class="w-full h-auto object-cover"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x250/444/ffffff?text=Error+Loading+Image';"
+                        >
+                    </div>
+                </div>              
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const appContainer = document.getElementById('app');
+            const lightSwitch = document.getElementById('light-switch');
+            const cloudPath = lightSwitch.querySelector('path');
+            
+            // Function to toggle the lamp state
+            function toggleLight() {
+                // Toggles the 'light-on' class on the main app container
+                const isLightOn = appContainer.classList.toggle('light-on');
+                
+                // Update specific elements' colors based on state
+                if (isLightOn) {
+                    // Change cloud color to hint at light source
+                    cloudPath.classList.remove('text-white');
+                    cloudPath.classList.add('text-yellow-300');
+                } else {
+                    // Reset cloud color
+                    cloudPath.classList.add('text-white');
+                    cloudPath.classList.remove('text-yellow-300');
+                }
+            }
+
+            // Light Switch Handler
+            lightSwitch.addEventListener('click', () => {
+                toggleLight();
+            });
+        });
+    </script>
+</body>
+</html>
